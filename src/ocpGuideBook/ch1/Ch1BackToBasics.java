@@ -11,7 +11,7 @@ import java.util.Date;
 import java.sql.*;  // wildcard can only be at the end.
 // wildcard does not bring in classes in child packages.
 
-public class Ch1 {
+public class Ch1BackToBasics {
 
     public static void main(String[] args) {
         Date date;  // It's util.Date. Explicit import takes priority.
@@ -19,6 +19,10 @@ public class Ch1 {
        
         int million = 1_000_000;  // can have underscores between numbers to make it easier to read
         System.out.println(million);  // except at the beginning, end, before & after decimal point (Can only be between numbers).
+        
+        // binary & hexadecimal can be assigned as int, double, float, etc (as long as within its range).
+        int aInt = 0b101; aInt = 0B101; aInt = 0x101; aInt = 0X101; System.out.println(aInt);
+        // float aFloat = 20.0;  Without f or F, it's double. Should be 20.0f OR 20.0F
         
         // Wrapper classes
         Integer myInt = null;
@@ -40,8 +44,14 @@ public class Ch1 {
                 Where do i start from  
                   Align respect with me """;  // The line with the last triple quotes defines positions of other lines respect to this line.
         
+        String theirString = """
+                Backslash-s means preserve white spaces then add a space (\s itself is a space)  \s
+                A backslash means ignore line break: \
+                Ignored""";
+        
         System.out.println(myString);
         System.out.println(yourString);
+        System.out.println(theirString);
         
         // Can declare variables in one line as long as same type.
         int a, b, c;
@@ -54,6 +64,7 @@ public class Ch1 {
         // myVar = 1;  // Compile error. Cannot change type of var.
         myVar = null;  // Can change to null once it knows what type.
         // var i = 1, j = 2, k = 3;  // var is not allowed for one line declaration.
+        var var = 1;  // var is not reserved word
     }
     
     // void printMe(int length = 1) {}  // Java do not have default parameters.
