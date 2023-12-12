@@ -22,7 +22,7 @@ public class Ch1BackToBasics {
         
         // binary & hexadecimal can be assigned as int, double, float, etc (as long as within its range).
         int aInt = 0b101; aInt = 0B101; aInt = 0x101; aInt = 0X101; System.out.println(aInt);
-        // float aFloat = 20.0;  Without f or F, it's double. Should be 20.0f OR 20.0F
+        // float aFloat = 20.0;  Without f or F, the number is double and cause compile error. Should be 20.0f OR 20.0F
         
         // Wrapper classes
         Integer myInt = null;
