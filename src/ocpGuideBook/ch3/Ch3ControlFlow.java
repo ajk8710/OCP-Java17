@@ -1,7 +1,8 @@
 package ocpGuideBook.ch3;
 
 public class Ch3ControlFlow {
-
+    static final int staticFinalInt = 100;
+    
     public static void main(String[] args) {
         
         // Playing with instanceof and pattern variable.
@@ -13,12 +14,21 @@ public class Ch3ControlFlow {
         System.out.println(number instanceof Double);  // true
         
         
+        // If Statement: Exam will trick you by else statement followed by else statement.
+        // It's actually inner else & outer else if you look closely.
+        if (false)  // a statement here makes following else not compile, because then it's no longer outer if.
+        if (true) System.out.println("Inner If");  // printed if true true
+        else System.out.println("Inner Else");  // printed if true false
+        else System.out.println("Outer Else");  // printed if false any
+        
+        
         // Switch Statement:
         // Switch variable can be primitives except boolean, long, float, double, which are:
         // byte, short, int, char & their wrapper types & String, enum, and var if actual type is one of these.
         // (Remember as boolean having too small range, and long, float, double having too large range.)
         
         // Case values must be compile-time constant values or final variables, and must be same type as switch variable.
+        // It also can't be final variable passed in method, because it's not compile-time constant (passed value can be anything).
         // It also can't be return value of a method that must run at runtime, even if return value is always the same.
         
         // From Java 14, you can combine switch cases with comma.
@@ -43,6 +53,8 @@ public class Ch3ControlFlow {
                 System.out.println(onMe);
             case 8 * 9:  // Compiles as it resolves at compile time.
                 System.out.println(onMe);
+            // case 8 * 9:  // Compile error due to duplicate case. case values must be distinct.
+            case staticFinalInt:  // static final variable allowed for case value
         }  // Unlike if-statement and loops, switch must have brackets even if there is a single case.
         
         // int and char can be evaluated to each other as ASCII counterpart.
@@ -73,7 +85,7 @@ public class Ch3ControlFlow {
         
         // Optional assignment.
         String myFish = switch (fish) {
-            default -> "Great Fish";  // must have return value if assigning
+            default -> "Great Fish";  // must return value if assigning
         };  // assignment must end with semicolon
         System.out.println(myFish);  // Great Fish
         
@@ -85,6 +97,7 @@ public class Ch3ControlFlow {
             case 3, 4 -> "Big Fish";
             // case 5 -> System.out.println("OK"); yield "Big Fish";  // Does not compile. Must have brackets if using yield.
             default -> "Great Fish";  // cases must cover all possible range of switch variable (if enum) or must have default (if not enum).
+            case 5 -> {if (true) yield "Fish"; else yield "New Fish";}  // Without else, compile error. Each branch must be guaranteed to return a value.
         };  // assignment must end with semicolon
         System.out.println(yourFish);  // Medium Fish
         
@@ -110,17 +123,26 @@ public class Ch3ControlFlow {
         // for (int i, int j; ;) {}  // Does not compile. Should not repeat type when declaring on a single line with comma.
         // for (Object Obj = null; ;) {}  // Compiles but infinite loop
         
+        int cnt = 0;
+        for (; cnt++ < 2;) System.out.print(cnt + " "); // prints 1 2
+        System.out.println();
+        cnt = 0;
+        for (; ++cnt < 2;) System.out.print(cnt + " "); // prints 1
+        System.out.println();
         
-        // For Each Loop: Iterate over collection (array or object implementing Iterable).
+        
+        // For Each Loop: Iterate over collection (array or object implementing Iterable - List, Queue, Set).
         // for (dataType eachItem : collection) {Do something with eachItem.}
         // eachItem is a variable that gets a copy of each item in collection. Modifying eachItem do not modify contents in collection.
         
         // Map do not implement Iterable, but has methods that returns collection that implements Iterable.
         // map.keySet(), map.values()
         
+        // Iterating over 2D array, for example, Double[][] (array of array) iterates over outer Double[], where eachItem is inner Double[].
+        
         // To use for-each loop on String, use toCharArray() method.
         String str = "Hello";
-        for (char c : str.toCharArray()) {
+        for (char c : str.toCharArray()) {  // can do "var c :", since compiler knows it's actually char.
             System.out.print(c + " ");  // H e l l o
         }
         System.out.println();
@@ -144,15 +166,24 @@ public class Ch3ControlFlow {
         OUTER_LOOP: for (int i = 0; i < 3; i++) {
             INNER_LOOP: for (int j = 0; j < 3; j++) {
                 System.out.print(j + ": ");
-                if (j == 0) continue;  // Label allows to break out from parent loop.
+                if (j == 0) continue;  // continue skips below code if j==0. Without if-statement, compile error due to unreachable code below.
                 System.out.print("I'm not printed when j == 0. ");
-            }                                  // Without label, break only breaks out from current loop.
+            }
             System.out.println();
         }
         System.out.println();  // prints 3 of "0: 1: I'm not printed when j == 0. 2: I'm not printed when j == 0."
-        // continue OUTER_LOOP; would print "0: 0: 0:"
+                               // continue OUTER_LOOP; would print "0: 0: 0:"
+                               // break breaks out from inner loop then do what's left below on outer loop. continue starts next iteration of outer loop.
         
-        // Any code right after break, continue, return, and compile-time known infinite loop is considered unreachable and cause compile error.
+        // Any code right after break, continue, return, and compile-time known infinite loop is considered unreachable and cause compile error,
+        // unless they (break, continue, return, infinite loop) are within if-statement. Compiles even if (true) break; Then dead code;
+    
+        
+        // Passing primitives into object. They converts into wrapper class.
+        printType(3);  // passing int into printType(Object o) and compiles.
+        printType('a');  // compiles
+        printType("abc");  // compiles
+        printType(true);  // compiles
     }
     
     // Java 16 introduced Pattern Matching & pattern variable, for shorter syntax of below common codes.
@@ -186,6 +217,10 @@ public class Ch3ControlFlow {
             return;  // return method if number is not Integer
         }
         System.out.println(data.intValue());  // This only executes if number is Integer and data is declared and initialized.
+    }
+    
+    static void printType(Object o) {  // can use instanceof to find actual type.
+        System.out.println(o);
     }
     
 }
