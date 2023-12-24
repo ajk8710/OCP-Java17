@@ -8,6 +8,7 @@ public class Ch4CoreAPIs3Math {
         
         // Utility Class: java.lang.Math class has static method to work with numbers. (I mean num for int/long/float/double)
         // Math.min(num, num), Math.max(num, num) return smaller/larger of two. 
+        System.out.println(Math.max(2, 1));  // 2
         System.out.println(Math.max(2, 1.0));  // int parameter 2 auto converts to double. Method returns 2.0
         
         // Math.round(float or double) rounds up/down number to int or long.

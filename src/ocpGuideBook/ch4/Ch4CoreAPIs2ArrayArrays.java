@@ -28,7 +28,7 @@ public class Ch4CoreAPIs2ArrayArrays {
         // Java's inconsistent naming for the size:
         // arr.length, str.length(), arrayList.size()
         
-        // equals() compares references as java does for all reference types. (except string)
+        // equals() compares references (using ==) as java does for all reference types. (unless equals() is custom implemented, such as string)
         // toString() prints hash values.
         
         
@@ -50,14 +50,14 @@ public class Ch4CoreAPIs2ArrayArrays {
         // null is considered smaller than any other.
         System.out.println(Arrays.compare(new int[] {1}, null));  // 1. (Arguments can't be both null and null)
         System.out.println(Arrays.compare(new String[] {"The other array contains a null"}, new String[1]));  // 1
-        // Arrays.compare(new int[] {1}, new String[] {"1"});  // compile error. compare/mismatch/equals must be arrays of same type.
+        // Arrays.compare(new int[] {1}, new String[] {"1"});  // compile error. Arrays.compare/mismatch/equals must be on arrays of same type.
         
         // Arrays.mismatch(arr1, arr2) is opposite concept of compare(). If same returns -1.
         // If different, returns index of first mismatch.
         // System.out.println(Arrays.mismatch(new int[] {1}, null));  // runtime error. null point exception.
         System.out.println(Arrays.mismatch(new int[] {1}, new int[] {1}));  // -1
         
-        // Arrays.equals(arr1, arr2) returns if all elements are the same.
+        // Arrays.equals(arr1, arr2) returns boolean that if all elements are the same.
         System.out.println(Arrays.equals(new int[] {1}, null));  // false. (Arguments can't be both null and null)
         System.out.println(Arrays.equals(new int[] {1}, new int[] {1}));  // true
         
