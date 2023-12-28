@@ -6,7 +6,7 @@ import ocpGuideBook.ch5.protectedMethods.Ch5ClassWithProtectedMethods;
 import static java.lang.Math.*;  // Static import let us to use static variables/methods without specifying class name.
 import static java.util.Collections.sort;  // Static import imports all overloaded methods. Do not include parameters in import.
 
-public class Ch5Methods {  // class modifiers: public, no-modifier, abstract, final (no protected or private)
+public class Ch5Methods {  // class modifiers: public, no-modifier, abstract, final (protected and private only for nested class)
     
     final int imFinal;  // Compile error. "Final" instance variables do not get default values. Must initialize here or in constructor.
     {imFinal = 0;}      // or in initializer block
