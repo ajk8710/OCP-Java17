@@ -20,7 +20,7 @@ public interface Ch7Interfaces {
     // All variables in interface are: public static final
     public abstract int method1(int i);
     int method2(int i);
-    private int method3(int i) {return 1;}  // All private methods must be implemented. (private & abstract are incompatible.)
+    private int method3(int i) {return 1;}  // All private methods must be implemented. (private & abstract are incompatible for a method.)
     
     public static final int CONSTANT1 = 1;
     int CONSTANT2 = 2;
@@ -36,7 +36,7 @@ public interface Ch7Interfaces {
     // Resolving multi-implementation conflict:
     // Unlike extending a class (that is single-inheritance), conflict from multi-implementation is allowed and resolved for interface,
     // as all public methods are abstract in interface (except default and static methods).
-    // (Conflicting default method must be overridden. Static methods in interface are not inherited.)
+    // (Conflicting default method must be overridden. Static methods in interface are not inherited.) (Static members in general are hidden, not inherited.)
     // There is no conflict on which implementation to use, even if two interfaces have the method with same signature (that are compatible).
     // The implementing class's implemented version is the only one to use it.
     
@@ -67,8 +67,8 @@ interface Interface1 {
 
 interface Interface2 {
     void conflictingMethod1();
-    default void conflictingMethod2() {Interface1.staticMethod();}  // You do not need to extend interface, to access static method.
-    // static {}  // Compile error.  Interfaces do have any initializer (static or not), since it cannot be instantiated.
+    default void conflictingMethod2() {Interface1.staticMethod();}  // You do not need to extend interface, to access static method. (public static members are available with Class name.)
+    // static {}  // Compile error.  Interfaces do not have any initializer (static or not), since it cannot be instantiated.
 }
 
 class Class1 implements Interface1, Interface2 {
@@ -84,7 +84,7 @@ class Class2 implements Interface1, Interface2 {
 }
 
 class Class3 {
-    {Interface1.staticMethod();}  // You do not need to implement interface, to access static method.
+    {Interface1.staticMethod();}  // You do not need to implement interface, to access static method. (Just like public static members are available with Class name to anyone.)
 }
 
 // private methods are used for code re-usability and encapsulation of logic.
