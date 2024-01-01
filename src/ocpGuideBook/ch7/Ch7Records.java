@@ -22,7 +22,7 @@ public class Ch7Records {
     }
 }
 
-// Record is a special type of data-oriented class. (It's shorthand version of encapsulated POJO. JavaBean.)
+// Record is a special type of data-oriented class (encapsulated & immutable). (It's shorthand version of encapsulated POJO. JavaBean.)
 // public (final) record RecordName(fields...) {}  Records are implicitly final (and cannot be extended). May not have any field, although not so useful.
 // All fields are private final, and has getter methods. (Getters do not have get prefix.)
 // It has an implicit constructor with all fields in same order.
