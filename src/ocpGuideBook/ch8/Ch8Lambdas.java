@@ -52,7 +52,7 @@ public class Ch8Lambdas {
         // Method reference is even shorter form of Lambda.
         // Method reference omits the parameter, and let Java to figure out depending on context.
         
-        // Method reference calling static method.
+        // Method reference calling static method with given parameter.
         interface Converter {long round(double num);}  // Abstract method takes double and returns long.
         Converter converter = x -> Math.round(x);  // Java says x must be double and what returns must be long.
         Converter converter2 = Math::round;  // Java says there is version of Math.round that takes double & returns long. So this must be it. 
@@ -60,12 +60,12 @@ public class Ch8Lambdas {
         System.out.println(converter.round(1.1));  // 1
         System.out.println(converter2.round(1.1));  // 1
         
-        // Method reference calling instance method of an particular object.
+        // Method reference calling instance method of an particular object (The object here is not the parameter).
         // TakesStringReturnsBoolean tsrb = stringParam -> someStringObj.startsWith(stringParam);
         // TakesStringReturnsBoolean tsrb = someStringObj::startsWith;  // It says run someStringObj.startsWith with param
         // tsrb.method(s);
         
-        // Method reference calling instance method on parameter that is an object.
+        // Method reference calling instance method on parameter that is an object. (Note that it specifies class name of the object.)
         // TakesStringReturnsBoolean tsrb = stringObjParam -> stringObjParam.isEmpty();
         // TakesStringReturnsBoolean tsrb = String::isEmpty;  // It says what is being passed is String object.
         // tsrb.method(s);
