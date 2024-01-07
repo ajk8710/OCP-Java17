@@ -10,7 +10,7 @@ public class Ch9Map {
         
         // Map is a group of uniqueKey-value pairs.
         // HashMap is unordered. TreeMap is always sorted on key.
-        // For TreeMap, key must implement Comparable interface or gets runtime exception when inserting.
+        // For TreeMap, key must implement Comparable interface or gets runtime exception when inserting. (Obviously null keys are not allowed)
         // Or use constructor with comparator: TreeMap(Comparator i.e. lambda expression).
         
         // There is Map.of method but bad practice, leading confusion.
@@ -32,6 +32,8 @@ public class Ch9Map {
         map.put("K1", "V1");
         map.put("K2", "V2");
         map.put("K3", "V3");
+        // map.put(null, "V4");
+        // System.out.println(map.get(null));  // V4
         
         
         // Iterating Map:
@@ -61,5 +63,19 @@ public class Ch9Map {
             System.out.print(e.getKey() + " " + e.getValue() + " ");  // K1 V1 K2 V2 K3 V3
         }
         System.out.println();
+        
+        
+        // Merge function of HashMap
+        // merge(key, newVal, BiFunction) replace value of key with newVal according to bi-function.
+        // If key does not exist or value is null, add key with newVal.
+        map = new HashMap<String, String>();
+        map.put("K1", "V1");
+        map.put("K2", "V2");
+        map.put("K3", null);
+        
+        for (String key : map.keySet()) {
+            map.merge(key, "New Val", (a, b) -> a.concat(b));
+        }
+        System.out.println(map);  // {K1=V1New Val, K2=V2, K3=null}
     }
 }

@@ -1,6 +1,7 @@
 package ocpGuideBook.ch9;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Ch9Generics {
@@ -22,6 +23,8 @@ public class Ch9Generics {
         // Remember overriding method's return type must be covariant, while its generic must be the same.
         
         
+        var objectList = new LinkedList<>();  // with var and not declaring type inside diamond, this is LinkedList<Object>
+        
         // Example using generic in method.
         Box<String> box1 = method2("Hi");
         // Box<String> box2 = method2(1);  // Compile error. Cannot convert from Box<Integer> to Box<String>.
@@ -31,9 +34,33 @@ public class Ch9Generics {
         
         
         // Bounding generic types using wildcard "?"
+        // Wildcards cannot be at right side of assignment. Can only be at left side or method parameter.
+        // Wildcards support both upper and lower bounds. Generic type parameters only support upper bounds (when passing as parameter, adding item to list, etc).
         List<?> list1 = new ArrayList<String>();  // unbound
-        List<? extends Exception> list2 = new ArrayList<RuntimeException>();  // upper bound (Exception is upper bound). Whatever extends Exception.
-        List<? super Exception> list3 = new ArrayList<Object>();  // lower bound (Exception is lower bound). Whatever super class of Exception.
+        List<? extends Exception> list2 = new ArrayList<RuntimeException>();  // upper bound (Exception is upper bound). Whatever extends Exception (or Exception itself).
+        List<? super Exception> list3 = new ArrayList<Object>();  // lower bound (Exception is lower bound). Whatever super class of Exception (or Exception itself).
+        // (Use extends for both class and interface)
+        
+        // List<T> list4 = new ArrayList<String>();  // Compile error. T cannot be here. Wildcard can be.
+        
+        // Compile error when attempting to add item to list with an unbounded or upper-bounded wildcard.
+        // list1.add("One");  // Cannot add anything except null because type is wildcard: List<?>.
+        List<String> list5 = new ArrayList<>();
+        list5.add("One");
+        list5.add("Two");
+        usingT(list5);  // One Two
+        usingWild(list5);  // One Two
+        
+        // ArrayList<Number> list6 = new ArrayList<Integer>();  // Compile error. Generic type must match here. (Generic forces exact type.)
+        List<? extends Number> list6 = new ArrayList<Integer>();  // Can't add anything to list b/c it could be anything extending Number. Wildcard is mostly used as method parameter.
+        
+        // Can add on wildcard with super. (lower bound)
+        // But it bahaves funky.
+        List<? super String> list7 = new ArrayList<Object>();
+        list7.add("One");
+        // list7.add(Integer.valueOf(1));  // Can only add String or its subclass (because Java says subclass can be String)
+        // list7.add(new StringBuilder("One"));
+        // list7.add(new Object());
     }
     
     // Both instance method and static method can contain generic type.
@@ -46,16 +73,30 @@ public class Ch9Generics {
     public static <T> Box<T> method2(T t) {
         return new Box<>();
     }
+    
+    // T vs ?
+    public static <T> void usingT(List<T> list) {
+        for (T t: list) {System.out.println(t);}
+    }
+    
+    public static void usingWild(List<?> list) {
+        for (Object o: list) {System.out.println(o);}
+    }
+    
+    public static <T extends Number> void copyWithT(List<T> dest, List<T> src) {}  // Safe in that both are list of type T
+    public static void copyWithWild(List<? extends Number> dest, List<? extends Number> src) {}// Two lists can hold different types.
+
 }
 
 // Box can contain any specific object T.
-// ex: Box of Animal can contain Dog or Cat. Box of Dog can contain Dog.
+// Ex: Box of Animal can contain Dog or Cat. Box of Dog can contain Dog.
 class Box<T> {  // Generic type parameter can be named anything (as long as valid identifier), but convention is a single upper-case letter.
     private T contents;
     public T getContents() {
         return contents;
     }
-    public void Box(T contents) {
+    public Box() {}
+    public Box(T contents) {
         this.contents = contents;
     }
     
@@ -63,8 +104,8 @@ class Box<T> {  // Generic type parameter can be named anything (as long as vali
         return new Box<>();
     }
     
-    // Warning: type parameter T is hiding the type T
-    public <T> Box<T> method2(T t) {  // Redefines T for this method. Can be different from T of class.
+    // Warning: type parameter T is hiding the type T. (Use different character.)
+    public <T> Box<T> method2(T t) {  // Re-defines T for this method, which can be different from T of class.
         return new Box<>();
     }
 }

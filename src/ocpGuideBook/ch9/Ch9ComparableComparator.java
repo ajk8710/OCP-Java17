@@ -67,6 +67,9 @@ public class Ch9ComparableComparator {
         System.out.println(dogs);  // [1, 2, 0]
         Collections.sort(dogs, byWeight.reversed());  // reversed() returns a comparator that imposes the reverse ordering of this comparator.
         System.out.println(dogs);  // [0, 2, 1]
+        
+        dogs.sort(byWeight2);  // using list.sort(comparator)
+        System.out.println(dogs);  // [1, 2, 0]
     }
 }
 

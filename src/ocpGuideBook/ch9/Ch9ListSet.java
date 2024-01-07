@@ -51,6 +51,7 @@ public class Ch9ListSet {
         
         // TreeSet stores in sorted tree structure.
         // It's always sorted (in respect to Comparable interface). But adding and checking if contains are slow.
+        // TreeSet does not allow null values.
         
         // Set also has of & copyOf methods + common collection methods such as: add(E), remove(Object)
         // Adding duplicate returns false, and does not add it.
