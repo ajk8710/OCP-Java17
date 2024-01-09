@@ -1,8 +1,10 @@
 package ocpGuideBook.cha10;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Ch10Stream {
@@ -18,11 +20,12 @@ public class Ch10Stream {
         Stream<String> parallelStream = list.parallelStream();  // parallelStream() creates stream that uses threads.
         
         
-        // Creating infinite streams
+        // Creating infinite streams. (Stream doesn't run unless you call terminal function on it.)
         Stream<Double> randoms = Stream.generate(Math::random);  // Stream.generate(supplier)
         Stream<Integer> oddNumbers = Stream.iterate(1, n -> n + 2);  // Stream.iterate(startingSeed, unaryOperator)
         Stream<Integer> oddNumsUpto100 = Stream.iterate(1, n -> n < 100, n -> n + 2);  // Stream.iterate(startingSeed, predicate, unaryOperator)
         
+        // Call terminal functions.
         // randoms.forEach(e -> System.out.println(e));  // prints random numbers infinitely until terminate
         // oddNumbers.forEach(e -> System.out.println(e));  // prints odd numbers infinitely until terminate
         // oddNumsUpto100.forEach(e -> System.out.println(e));  // prints odd numbers upto 100 (Until predicate returns false)
@@ -52,9 +55,9 @@ public class Ch10Stream {
         s = Stream.of("Pizza", "Chicken", "Cheese Burger");
         System.out.println(s.anyMatch(each -> each.charAt(0) == 'C'));  // true
         s = Stream.of("Cheese Pizza", "Chicken", "Cheese Burger");
-        System.out.println(s.allMatch(each -> each.contains("C")));  // true
+        System.out.println(s.allMatch(each -> each.contains("C")));  // true (false as soon as it see's something un-matching, even in infinite stream)
         s = Stream.of("Pizza", "Chicken", "Cheese Burger");
-        System.out.println(s.noneMatch(each -> each.charAt(0) == 'A'));  // true
+        System.out.println(s.noneMatch(each -> each.charAt(0) == 'A'));  // true (false as soon as it see's something matching, even in infinite stream)
         
         // forEach(consumer)
         s = Stream.of("Pizza", "Chicken", "Cheese Burger");
@@ -70,6 +73,10 @@ public class Ch10Stream {
         s = Stream.of("a", "b", "c", "d", "e");
         System.out.println(s.reduce((cur, nxt) -> cur + nxt).orElse(null));  // abcde
         
+        // collect(collector) collects results as collection.
+        Stream.of("c", "b", "a", "e", "d").sorted().collect(Collectors.toList()).forEach(System.out::print);  // abcde. collect is terminal operation, returns a list. Then Collection.forEach of list.
+        System.out.println();
+        
         
         // Common intermediate operations (returns a stream as result)
         
@@ -84,8 +91,8 @@ public class Ch10Stream {
         System.out.println();
         
         // limit(maxSize), skip(long)
-        Stream<Integer> intS = Stream.iterate(1, n -> n + 1);  // infinite stream generates every number from 1
-        intS.skip(5).limit(3).forEach(System.out::print);  // 678
+        Stream<Integer> intS = Stream.iterate(1, n -> n + 1);  // infinite stream generates every integer from 1
+        intS.skip(5).limit(3).forEach(System.out::print);  // 678. limit stops after taking 3 integers. Each time it got a integer it passed to for each.
         System.out.println();
         
         // map(function) maps each element to another (converts each from a type to maybe different type)
@@ -93,8 +100,9 @@ public class Ch10Stream {
         s.map(e -> e.length()).forEach(e -> System.out.print(e + " "));  // 5 7 6 
         System.out.println();
         
-        // flatMap(Stream<List<String>>) takes multiple streams and combines into one.
-        // Stream.concat(s1, s2) combines streams.
+        // flatMap(Stream<List<String>>) takes multiple streams and combines into one. (removes unnecessary layer)
+        // (flattens nested streams into a single level and also removes empty streams.)
+        // Stream.concat(s1, s2) combines streams. It only takes two parameters.
         
         // sorted() & sorted(comparator)
         s = Stream.of("Pizza", "Chicken", "Cheese");
@@ -111,6 +119,26 @@ public class Ch10Stream {
         s.filter(e -> true).peek(System.out::print).count();  // PizzaChickenCheese Burger
         System.out.println();
         
+        
+        // Streams focus on what you want to accomplish, rather than how to do so. (Without streams, ex. regular for-loops, focuses on how rather than what.)
+        // (Streams and functional programming, how to do is defined in function. You call them.)
+        var streamEx = List.of("wwww", "xxxx", "yy", "zzzz");
+        
+        streamEx.stream()
+        .filter(n -> n.length() == 4)  // intermediate.  Every time it sees length-4 item, pass to sorted.
+        .sorted()  // intermediate.  Wait until it receives all items to sort. Then every time 1 item is sorted, pass to limit.
+        .limit(2)  // intermediate.  Every time it gets an item, pass it to forEach. Stops receiving after receiving 2 item.
+        .forEach(System.out::println);  // terminal.  Prints as it get an item.
+        
+        
+        // Streams are lazy evaluated.
+        var foods = new ArrayList<String>();
+        foods.add("Pizza");
+        foods.add("Chicken");
+        var stream = foods.stream();  // Stream isn't created until you call a function on it (lazy evaluation).
+        foods.add("Cheese Burger");
+        System.out.println(stream.count());  // 3. Stream pipeline runs here, look for the data, arrayList has 3 elements.
+        
+        
     }
-    
 }
