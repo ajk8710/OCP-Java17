@@ -18,11 +18,12 @@ public class Ch11PropertiesWithResourceBundles {
         ResourceBundle rb2 = ResourceBundle.getBundle("Zoo", new Locale("fr", "FR"));  // Selects specified locale. Used on exam.
         rb1.getString("hello");  // gets string value of the key
         
+        // When locale is not specified (i.e. ResourceBundle.getBundle("Zoo");), Java starts looking from default locale to set as base (Zoo_en_US -> Zoo_en -> Zoo).
         // When locale is specified, Java tries to find the best match to set as base.
         // If, fr_FR is requested, as rb2 above:
         // Look for Zoo_fr_FR, then Zoo_fr, then default locale which is Zoo_en_US, then Zoo_en then just Zoo without locale.
-        // Once it selects the base resource bundle, it can look up keys from the base's parent's if it's not there.
-        // (Parent here means removing the component of name: Zoo_fr_FR (key not here) -> Zoo_fr (key not here) -> Zoo (is it here, if not exception thrown)
+        // Once it selects the base resource bundle, it can look up keys from the base's parent's if it's not in base.
+        // (Parent here means removing the component of name: Zoo_fr_FR (key not here) -> Zoo_fr (key not here) -> Zoo (is it here, if not exception is thrown))
         
         Locale us = new Locale("en", "US");
         Locale france = new Locale("fr", "FR");

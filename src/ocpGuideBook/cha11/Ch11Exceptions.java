@@ -11,7 +11,7 @@ public class Ch11Exceptions {
         // A method can handle the exception by itself or make it the caller’s responsibility.
         // Throwable -extended by- Exception & Error.  Exception -extended by- RuntimeException.
         // Unchecked exceptions are ones that extends RuntimeException or Error.
-        // Checked exceptions are Exceptions but are not RuntimeException.
+        // Checked exceptions are Exceptions but are not RuntimeException. (All that extends Throwable but are not RuntimeException or not Error are checked exceptions.)
         
         // Checked exceptions have "Handle or Declare" rule:
         // All checked exceptions that could be thrown in a method
@@ -35,7 +35,7 @@ public class Ch11Exceptions {
         
         try {  // braces are "required" for try catch blocks.
             throw new RuntimeException();  // Exception thrown, method returns.
-            // throw new ArrayIndexOutOfBoundsException();  // Compile error, unreachable code.
+            // throw new ArrayIndexOutOfBoundsException();  // Compile error, unreachable code.  (If two lines are switched, then both would be reachable.)
         } catch (Exception e) {}
         
         /* 
@@ -46,6 +46,9 @@ public class Ch11Exceptions {
             System.out.println("Unreachable");
         }
         */
+        
+        // Contrast to above example, a method that declares exception in method signature is not required to throw exception, even if checked exception.
+        // See notThrowException1() method and notThrowException2() method below.
         
         try {
             // This is fine. Compiler has no way of knowing if unchecked exception will be thrown or not.
@@ -114,6 +117,7 @@ public class Ch11Exceptions {
         try (FileInputStream input = new FileInputStream("myfile.txt")) {  // resources are in scope of try block only
             // Instead of opening resources here, I opened above with try.
             // Read file data.
+            // input = null;  // Compile error. Resources declared in try-with-resources cannot be reassigned. They are final or effectively final.
         } catch (IOException e) {
             // e.printStackTrace();
         }  // No need for finally block to close resources. Resources are closed when they go out of try block with try-with-resources.
@@ -131,7 +135,7 @@ public class Ch11Exceptions {
         }
         
         // Resources can be declared & initialized outside of try-with-resources, as long as they are final or effectively final.
-        // try (input; output;) {...}
+        // try (input; output;) {...}  // This works if input and output are final or effectively final.
         
     }
     
@@ -157,9 +161,26 @@ public class Ch11Exceptions {
         }
     }
     
+    static void notThrowException1() throws IOException {  // A method can declare to throw and not actually throw.
+        // Caller needs to handle checked exception, even though it's not actually thrown.
+    }
+    
+    static void notThrowException2() throws RuntimeException {  // Having unchecked exception in method signature is not a good practice. Instead, document them in javadoc.
+        // Caller is not required to handle unchecked exception anyways
+    }
+    
+    static void ThrowsException1() throws IOException {
+        // throw new Exception();  // Compile error. If checked exception is actually thrown, they must be handled by try-catch or by declaring in method signature.
+        throw new IOException();
+    }
+    
+    static void ThrowsException2() throws IOException {
+        throw new RuntimeException();  // Unchecked exception does not need to be handled.
+    }
+    
 }
 
-class MyResource implements AutoCloseable {
+class MyResource implements AutoCloseable {  // AutoCloseable's close() throws Exception.
 
     @Override
     public void close() { // throws Exception {  // Overridden method can shrink exception. (But cannot widen it.)
