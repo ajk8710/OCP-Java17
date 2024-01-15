@@ -6,6 +6,10 @@ public class Ch12ServiceProviderConsumer {
         
         /*
         Service is composed of an interface, any classes that interface references, and a way to look up implementations of the interface.
+        Figure 12.13 on pg 680:
+        Interface exports itself. Locator exports itself, requires interface & uses Interface
+        Consumer requires interface & locator. Provider requires interface & provides Interface with Implementation.
+        
         
         Service provider interface & service locator can be in different modules or in a same module.
         Example of service provider interface, under zoo.tours.api package:
@@ -23,7 +27,7 @@ public class Ch12ServiceProviderConsumer {
         
         Service locator can find any classes that implement the service provider interface.
         Java provides ServiceLoader class with static load() method to help finding implementing classes.
-        load() method returns iterable, load().stream() method returns stream.
+        load() method returns iterable, load().stream() method returns a list of Provider interfaces, so then map(Provider::get).collect(Collectors.toList())
         
         public class TourFinder {  // under zoo.tours.reservations package
             public static List<Tour> findAllTours() {

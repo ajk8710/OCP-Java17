@@ -63,8 +63,6 @@ public class Ch12Modules {
         // open module zoo.animal.care {  // "open" on module opens all its exporting packages.
                // opens zoo.animal.care.medical;  // Compile error: open cannot be used with opens, it's duplicate.
         // }
-        
     }
     
 }
-
