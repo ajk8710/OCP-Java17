@@ -43,12 +43,12 @@ public class Ch15JDBC {
         
         /*
         JDBC URL:
-        protocol : subprotocol(vendor name) : subname(varies, location and/or name))
+        protocol(always jdbc) : subprotocol(vendor name) : subname(varies, location and/or name))
             jdbc:hsqldb://localhost:5432/zoo
         
         DriverManager uses factory pattern, has static methods getConnection(url) & getConnection(url, username, pw) to get instance of Connection (vendor-specific connection class).
         Factory pattern takes care of details of creating instance. For example, you do not need to know actual class name.
-        (DriverManager looks for driver that can handle given JDBC URL.)
+        (DriverManager looks for driver that can handle given JDBC URL.) (Look out for new keyword on exam. It's probably compile error.)
         
         PreparedStatement & CallableStatement is sub-interface of Statement. Statement is not SQL-injection safe.
         PreparedStatment requires SQL query as parameter.
@@ -127,17 +127,17 @@ public class Ch15JDBC {
             sql = "{call read_e_names()}";  // {call procedure_name}
             try (CallableStatement cs = conn.prepareCall(sql); ResultSet rs = cs.executeQuery()) {
                 while (rs.next()) {
-                    System.out.println(rs.getString(3));  // 3rd column
+                    System.out.println(rs.getString(3));  // 3rd column. Getting by column position is not good practice though.
                 }
             }
             
             // Call stored procedure with IN parameter:
             sql = "{call read_names_by_letter(?)}";  // pass ? to show that you have parameter.
             try (var cs = conn.prepareCall(sql)) {
-                cs.setString("prefix", "Z");  // setString(paramName, param)  Unlike PreparedStatement, you can use param index or param name.
+                cs.setString("prefix", "Z");  // setString(paramName, param)  Unlike PreparedStatement, you can use param name, instead of param index.
                 try (var rs = cs.executeQuery()) {  // nested try-with-resources, after setting bind variable (?)
                     while (rs.next()) {
-                        System.out.println(rs.getString(3));
+                        System.out.println(rs.getString(3));  // Getting by column position is not good practice though.
                     }
                 }
             }
@@ -146,8 +146,8 @@ public class Ch15JDBC {
             sql = "{?= call magic_number(?)}";  // ?= to specify that stored procedure has output that is not ResultSet. It's optional but helps readability.
             try (var cs = conn.prepareCall(sql)) {
                 cs.registerOutParameter(1, Types.INTEGER);  // allows JDBC to retrieve output that is not ResultSet.
-                cs.execute();  // execute() executes query then returns boolean whether there is ResultSet. We know we are not getting ResultSet.
-                System.out.println(cs.getInt("num"));  // grab the output and print.
+                cs.execute();  // execute() executes query then returns boolean whether there is ResultSet. We know we are not getting ResultSet (This statement is not SELECT).
+                System.out.println(cs.getInt("num"));  // grab the output and print. Note CallableStatment has getXXX for many types since result can vary depending on stored procedure.
             }
             
             // Call stored procedure with INOUT parameter:
@@ -160,13 +160,40 @@ public class Ch15JDBC {
             }
             
             // Just be able to recognize that you can pass options on these methods. There is no method with just one option.
-            // prepareStatement(String sql, int resultSetTypeOption, int concurrencyOption)
-            // prepareCall(String sql, int resultSetTypeOption, int concurrencyOption)
+            // prepareStatement(String sql, int resultSetTypeOption, int resultSetConcurrencyOption)
+            // prepareCall(String sql, int resultSetTypeOption, int resultSetConcurrencyOption)
             
         }
         catch (SQLException e) {
             System.out.println("Exception");
         }
+        
+        
+        // On exam, changes are committed automatically unless otherwise specified.
+        // Know following behaviors.
+        
+        // conn.setAutoComit(false)
+        // conn.rollback() - Rolls back all executed commands that you did since last commit/transaction.
+        // conn.comit()
+        
+        // conn.setAutoComit(true) automatically triggers commit if not already in auto-comit mode.
+        // Closing connection without roll back or commit - Results of executed commands are undefined.
+        
+        // Savepoint sp1 = conn.setSavepoint();
+        // Savepoint sp2 = conn.setSavepoint("second savepoint");  // Optional toString string.
+        // conn.rollback(sp1);  // rolls back to sp1, removes Savepoint sp2.
+        // conn.rollback();  // rolls back to last commit, removes all savepoints.
+        // conn.rollback(sp2);  // throws SQLExeption. sp2 was removed.
+        
+        // Calling rollback(), when there's nothing to roll back, does not do anything (when on non auto-comit mode).
+        
+        
+        // Closing Database Resources:
+        // Closing Connection also closes PreparedStatement (or CallableStatement) and ResultSet.
+        // Closing PreparedStatement (or CallableStatement) also closes ResultSet.
+        // If you run another SQL statement on Pre/CallStatement, its previous ResultSet automatically closes.
+        
+        // To properly close one by one, close ResultSet, Pre/CallStatement, then Connection.
         
     }
     
